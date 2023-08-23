@@ -29,10 +29,17 @@ class PicturesSearch extends Component {
     isLoading: false,
   };
   items = this.state;
-  showLoader = 0;
+
   maxLength = 0;
 
   componentDidUpdate(prevProps, prevState) {
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        this.setState({
+          show: false,
+        });
+      }
+    });
     if (this.state.q !== prevState.q) {
       this.setState({
         isLoading: true,
