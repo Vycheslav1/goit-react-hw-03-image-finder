@@ -10,7 +10,9 @@ export const Overlay = styled.div`
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
-  /* z-index: 1200;*/
+  z-index: 1200;
+  transform: translateY(0%);
+  transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
 `;
 
 export const Backdrop = styled.div`

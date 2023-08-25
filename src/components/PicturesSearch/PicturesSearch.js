@@ -4,8 +4,6 @@ import Notiflix from 'notiflix';
 
 import { Searchbar } from 'components/Searchbar/Searchbar.js';
 
-import { Button } from 'components/Button/Button.js';
-
 import { Modal } from 'components/Modal/Modal.js';
 
 import { Div } from './PicturesSearchStyles.js';
@@ -14,51 +12,34 @@ import { ImageGallery } from 'components/ImageGallery/ImageGallery.js';
 
 import { Loader } from 'components/Loader/Loader.js';
 
-import { getPicturesGallery } from './search.js';
+import { getPicturesGallery } from 'api/search.js';
 
 class PicturesSearch extends Component {
   state = {
     pictures: [],
     q: '',
     page: 1,
-    key: '38043357-f10dc93754f8f78d0f9509fe0',
-    image_type: 'photo',
-    orientation: 'horizontal',
     per_page: 12,
     show: false,
     isLoading: false,
+    showButton: false,
   };
   items = this.state;
-
   maxLength = 0;
+  maxPages = 0;
 
   componentDidUpdate(prevProps, prevState) {
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        this.setState({
-          show: false,
-        });
-      }
-    });
-    if (this.state.q !== prevState.q) {
-      this.setState({
-        isLoading: true,
-      });
-
-      this.setState({
-        pictures: this.items.pictures.splice(0, this.items.pictures.length),
-        page: 1,
-      });
-
-      this.items.pictures = this.state.pictures;
-
-      this.items.page = 1;
-
+    if (this.state.q !== prevState.q || this.state.page !== prevState.page) {
       this.items.q = this.state.q;
 
-      getPicturesGallery(this.items, this.showLoader)
+      getPicturesGallery(this.items)
         .then(response => {
+          this.items.pictures = [...this.items.pictures, ...response.data.hits];
           this.maxLength = response.data.totalHits;
+          this.maxPages = Math.floor(
+            response.data.totalHits / this.state.per_page
+          );
+
           if (response.data.totalHits === 0) {
             Notiflix.Notify.info(
               'Sorry, there are no images matching your search query. Please try again.'
@@ -66,53 +47,62 @@ class PicturesSearch extends Component {
           }
 
           this.setState({
-            pictures: this.items.pictures.splice(0, 0, ...response.data.hits),
+            pictures: this.items.pictures,
+            isLoading: false,
+            showButton: true,
           });
+
+          this.items.showButton = true;
+          if (this.items.pictures.length >= this.maxLength) {
+            this.setState({
+              showButton: false,
+            });
+          }
         })
         .catch(error => {
           console.log(error);
         });
-      this.setState({
-        isLoading: false,
-      });
     }
-    if (!Math.floor(1 / this.state.page)) {
-      if (this.state.page !== prevState.page) {
-        this.setState({
-          isLoading: true,
-        });
-        getPicturesGallery(this.items, this.showLoader)
-          .then(response => {
-            this.setState({
-              pictures: this.items.pictures.splice(
-                this.items.pictures.length,
-                0,
-                ...response.data.hits
-              ),
-            });
-          })
-          .catch(error => {
-            console.log(error);
-          });
-        this.setState({
-          isLoading: false,
-        });
-      }
-    }
-
-    this.showLoader = 1;
   }
+
   handlSubmit = (evt, id) => {
     evt.preventDefault();
     this.setState({
+      pictures: [],
       q: document.getElementById(id).value.trim(),
+      page: 1,
+      per_page: 12,
+      isLoading: true,
+      showButton: false,
     });
+
+    this.items.pictures = [];
+    this.items.per_page = 12;
+    this.items.page = 1;
   };
 
   handleChangePage = evt => {
     this.setState({
       page: (this.items.page += 1),
+      isLoading: true,
+      showButton: false,
     });
+    if (this.items.page > this.maxPages) {
+      this.maxLength % this.state.per_page < 3
+        ? (this.items.per_page = 12)
+        : (this.items.per_page = this.maxLength % this.state.per_page);
+      this.setState({
+        per_page: this.items.per_page,
+      });
+    }
+  };
+
+  handleModalView = e => {
+    if (e.key === 'Escape') {
+      this.setState({
+        show: false,
+      });
+    }
   };
 
   showModal = e => {
@@ -120,11 +110,13 @@ class PicturesSearch extends Component {
       show: true,
     });
 
-    this.items.largeImageURL = this.items.pictures.find(
+    document.addEventListener('keydown', this.handleModalView);
+
+    this.items.largeImageURL = this.state.pictures.find(
       picture => picture.webformatURL === e.target.src
     ).largeImageURL;
 
-    this.items.tags = this.items.pictures.find(
+    this.items.tags = this.state.pictures.find(
       picture => picture.webformatURL === e.target.src
     ).tags;
   };
@@ -133,31 +125,31 @@ class PicturesSearch extends Component {
     this.setState({
       show: false,
     });
+    document.removeEventListener('keydown', this.handleModalView);
   };
 
   render() {
-    return this.state.show ? (
-      <Modal
-        hideModal={this.showOverlay}
-        largeImageURL={this.items.largeImageURL}
-        title={this.items.tags}
-      />
-    ) : (
+    return (
       <Div>
         <Searchbar valueSubmit={this.handlSubmit} />
         {!this.state.isLoading ? (
           <ImageGallery
+            changePageNumber={this.handleChangePage}
+            viewButton={this.state.showButton}
             viewModal={this.showModal}
             photos={this.items.pictures}
-            max={this.maxLength}
           />
         ) : (
           <Loader />
         )}
-        {this.items.pictures.length > 0 &&
-          this.items.pictures.length < this.maxLength && (
-            <Button changePage={this.handleChangePage} />
-          )}
+
+        {this.state.show && (
+          <Modal
+            hideModal={this.showOverlay}
+            largeImageURL={this.items.largeImageURL}
+            title={this.items.tags}
+          />
+        )}
       </Div>
     );
   }
