@@ -8,7 +8,7 @@ const inputId = nanoid();
 
 const Searchbar = ({ valueSubmit }) => (
   <Header>
-    <Form onSubmit={evt => valueSubmit(evt, inputId)}>
+    <Form onSubmit={evt => valueSubmit(evt)}>
       <Button type="submit">
         <Span>Search</Span>
       </Button>

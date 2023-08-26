@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
 
-import { Button } from 'components/Button/Button.js';
+//import { Button } from 'components/Button/Button.js';
 
 import { PicturesList } from './ImageGalleryStyles.js';
 
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem.js';
 
-const ImageGallery = ({ changePageNumber, viewButton, viewModal, photos }) => (
+const ImageGallery = ({ viewModal, photos }) => (
   <>
     <PicturesList onClick={e => viewModal(e)}>
       {photos.map(photo => ImageGalleryItem(photo))}
     </PicturesList>
-    {viewButton && <Button changePage={changePageNumber} />}
   </>
 );
 
@@ -43,8 +42,6 @@ ImageGallery.propTypes = {
     })
   ),
   viewModal: PropTypes.func.isRequired,
-  changePageNumber: PropTypes.func.isRequired,
-  viewButton: PropTypes.bool.isRequired,
 };
 
 export { ImageGallery };
