@@ -20,7 +20,7 @@ class PicturesSearch extends Component {
   state = {
     pictures: [],
     q: '',
-    page: 1,
+    page: 0,
     show: false,
     isLoading: false,
     showButton: false,
@@ -75,7 +75,7 @@ class PicturesSearch extends Component {
     });
 
     this.items.pictures = [];
-    this.items.page = 1;
+    this.items.page += 1;
   };
 
   handleChangePage = () => {
@@ -130,7 +130,7 @@ class PicturesSearch extends Component {
         ) : (
           <Loader />
         )}
-        {this.state.showButton && <Button changePage={this.handleChangePage} />}
+        {this.state.showButton && <Button changePage={this.handleSubmit} />}
         {this.state.show && (
           <Modal
             hideModal={this.showOverlay}
