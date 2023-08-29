@@ -44,16 +44,16 @@ class PicturesSearch extends Component {
           this.setState({
             pictures: this.items.pictures,
             isLoading: false,
-            showButton: true,
+            showButton: this.items.page < Math.ceil(this.items.maxLength / 12),
             maxLength: this.items.maxLength,
           });
           this.items.showButton = true;
-          if (this.items.pictures.length >= this.items.maxLength) {
+          /*      if (this.items.pictures.length >= this.items.maxLength) {
             this.setState({
               showButton: false,
             });
             this.items.showButton = false;
-          }
+          }*/
         })
         .catch(error => {
           console.log(error);
