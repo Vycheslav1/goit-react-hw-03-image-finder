@@ -65,7 +65,7 @@ class PicturesSearch extends Component {
     }
   }
 
-  handlSubmit = evt => {
+  handleSubmit = evt => {
     evt.preventDefault();
     this.setState({
       pictures: [],
@@ -121,7 +121,7 @@ class PicturesSearch extends Component {
   render() {
     return (
       <Div>
-        <Searchbar valueSubmit={this.handlSubmit} />
+        <Searchbar valueSubmit={this.handleSubmit} />
         {!this.state.isLoading ? (
           <ImageGallery
             viewModal={this.showModal}
