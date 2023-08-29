@@ -29,7 +29,7 @@ class PicturesSearch extends Component {
   items = this.state;
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.q !== prevState.q || this.state.page !== 1) {
+    if (this.state.q !== prevState.q || this.items.page !== prevState.page) {
       getPicturesGallery(this.state.q, this.state.page)
         .then(response => {
           this.items.pictures = [...this.items.pictures, ...response.data.hits];
