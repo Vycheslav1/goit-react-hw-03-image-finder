@@ -20,7 +20,7 @@ class PicturesSearch extends Component {
   state = {
     pictures: [],
     q: '',
-    page: 0,
+    page: 1,
     show: false,
     isLoading: false,
     showButton: false,
@@ -29,7 +29,7 @@ class PicturesSearch extends Component {
   items = this.state;
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.q !== prevState.q || this.state.page !== this.items.page) {
+    if (this.state.q !== prevState.q || this.state.page !== 1) {
       getPicturesGallery(this.state.q, this.state.page)
         .then(response => {
           this.items.pictures = [...this.items.pictures, ...response.data.hits];
@@ -75,7 +75,7 @@ class PicturesSearch extends Component {
     });
 
     this.items.pictures = [];
-    this.items.page += 1;
+    this.items.page = 1;
   };
 
   handleChangePage = () => {
