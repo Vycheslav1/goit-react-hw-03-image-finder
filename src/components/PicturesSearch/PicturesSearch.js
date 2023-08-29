@@ -29,7 +29,7 @@ class PicturesSearch extends Component {
   items = this.state;
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.q !== prevState.q || this.items.page !== prevState.page) {
+    if (this.state.q !== prevState.q || this.state.page !== prevState.page) {
       getPicturesGallery(this.state.q, this.state.page)
         .then(response => {
           this.items.pictures = [...this.items.pictures, ...response.data.hits];
@@ -38,10 +38,6 @@ class PicturesSearch extends Component {
             Notiflix.Notify.info(
               'Sorry, there are no images matching your search query. Please try again.'
             );
-
-            //     toast.success(
-            //        'Sorry, there are no images matching your search query. Please try again.'
-            //     );
           }
           this.items.maxLength = response.data.totalHits;
 
@@ -51,13 +47,6 @@ class PicturesSearch extends Component {
             showButton: this.items.page < Math.ceil(this.items.maxLength / 12),
             maxLength: this.items.maxLength,
           });
-          //    this.items.showButton = true;
-          /*      if (this.items.pictures.length >= this.items.maxLength) {
-            this.setState({
-              showButton: false,
-            });
-            this.items.showButton = false;
-          }*/
         })
         .catch(error => {
           console.log(error);
@@ -80,7 +69,7 @@ class PicturesSearch extends Component {
 
   handleChangePage = () => {
     this.setState(prev => ({
-      page: (prev.page += 1),
+      page: prev.page + 1,
       isLoading: true,
       showButton: false,
     }));
