@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import Notiflix from 'notiflix';
 
+//import Toast from 'toast';
+
 import { Searchbar } from 'components/Searchbar/Searchbar.js';
 
 import { Button } from 'components/Button/Button.js';
@@ -38,6 +40,9 @@ class PicturesSearch extends Component {
             Notiflix.Notify.info(
               'Sorry, there are no images matching your search query. Please try again.'
             );
+            //     toast.success(
+            //        'Sorry, there are no images matching your search query. Please try again.'
+            //     );
           }
           this.items.maxLength = response.data.totalHits;
 
@@ -118,8 +123,14 @@ class PicturesSearch extends Component {
     return (
       <Div>
         <Searchbar valueSubmit={this.handlSubmit} />
-        <ImageGallery viewModal={this.showModal} photos={this.items.pictures} />
-
+        {!this.state.isLoading ? (
+          <ImageGallery
+            viewModal={this.showModal}
+            photos={this.items.pictures}
+          />
+        ) : (
+          <Loader />
+        )}
         {this.state.showButton && <Button changePage={this.handleChangePage} />}
         {this.state.show && (
           <Modal
