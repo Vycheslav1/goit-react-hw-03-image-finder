@@ -118,14 +118,8 @@ class PicturesSearch extends Component {
     return (
       <Div>
         <Searchbar valueSubmit={this.handlSubmit} />
-        {!this.state.isLoading ? (
-          <ImageGallery
-            viewModal={this.showModal}
-            photos={this.items.pictures}
-          />
-        ) : (
-          <Loader />
-        )}
+        <ImageGallery viewModal={this.showModal} photos={this.items.pictures} />
+
         {this.state.showButton && <Button changePage={this.handleChangePage} />}
         {this.state.show && (
           <Modal
