@@ -40,7 +40,7 @@ class PicturesSearch extends Component {
             );
           }
           this.items.maxLength = response.data.totalHits;
-
+          this.items.showButton = true;
           this.setState({
             pictures: this.items.pictures,
             isLoading: false,
