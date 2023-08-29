@@ -4,7 +4,7 @@ import { Load, ButtonWrapper } from './ButtonStyles.js';
 
 const Button = ({ changePage }) => (
   <ButtonWrapper>
-    <Load type="button" onClick={evt => changePage(evt)}>
+    <Load type="button" onClick={evt => changePage()}>
       Load more
     </Load>
   </ButtonWrapper>
