@@ -13,7 +13,7 @@ async function getPicturesGallery(query, pageNumber) {
       per_page: 12,
     },
   });
-  localStorage.setItem('response', JSON.stringify(response));
+
   return response;
 }
 

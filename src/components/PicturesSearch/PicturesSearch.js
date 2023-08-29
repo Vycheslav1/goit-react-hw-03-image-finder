@@ -30,12 +30,9 @@ class PicturesSearch extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.q !== prevState.q || this.state.page !== prevState.page) {
-      getPicturesGallery(this.state.q, this.items.page)
+      getPicturesGallery(this.state.q, this.items.page + 1)
         .then(response => {
-          this.items.pictures = [
-            ...this.items.pictures,
-            ...JSON.parse(localStorage.getItem('response')).data.hits,
-          ];
+          this.items.pictures = [...this.items.pictures, ...response.data.hits];
 
           if (response.data.totalHits === 0) {
             Notiflix.Notify.info(
@@ -46,9 +43,7 @@ class PicturesSearch extends Component {
             //        'Sorry, there are no images matching your search query. Please try again.'
             //     );
           }
-          this.items.maxLength = JSON.parse(
-            localStorage.getItem('response')
-          ).data.totalHits;
+          this.items.maxLength = response.data.totalHits;
 
           this.setState({
             pictures: this.items.pictures,
