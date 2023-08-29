@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 
 import Notiflix from 'notiflix';
 
-//import Toast from 'toast';
-
 import { Searchbar } from 'components/Searchbar/Searchbar.js';
 
 import { Button } from 'components/Button/Button.js';
@@ -40,6 +38,7 @@ class PicturesSearch extends Component {
             Notiflix.Notify.info(
               'Sorry, there are no images matching your search query. Please try again.'
             );
+
             //     toast.success(
             //        'Sorry, there are no images matching your search query. Please try again.'
             //     );
