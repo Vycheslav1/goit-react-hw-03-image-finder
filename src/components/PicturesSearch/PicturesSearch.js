@@ -78,8 +78,7 @@ class PicturesSearch extends Component {
     this.items.page = 1;
   };
 
-  handleChangePage = evt => {
-    evt.preventDefault();
+  handleChangePage = () => {
     this.setState(prev => ({
       page: (prev.page += 1),
       isLoading: true,
