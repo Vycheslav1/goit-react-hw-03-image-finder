@@ -30,7 +30,7 @@ class PicturesSearch extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.q !== prevState.q || this.state.page !== prevState.page) {
-      getPicturesGallery(this.state.q, 2)
+      getPicturesGallery(this.state.q, this.items.page)
         .then(response => {
           this.items.pictures = [...this.items.pictures, ...response.data.hits];
 
@@ -51,7 +51,7 @@ class PicturesSearch extends Component {
             showButton: this.items.page < Math.ceil(this.items.maxLength / 12),
             maxLength: this.items.maxLength,
           });
-          this.items.showButton = true;
+          //    this.items.showButton = true;
           /*      if (this.items.pictures.length >= this.items.maxLength) {
             this.setState({
               showButton: false,
