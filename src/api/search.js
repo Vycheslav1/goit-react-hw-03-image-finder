@@ -16,11 +16,11 @@ const baseURL = 'https://pixabay.com/api/';
 
   return response;
 }*/
-const getPicturesGallery = async items => {
+const getPicturesGallery = async (query, pageNumber) => {
   const results = await axios.get(baseURL, {
     params: {
-      q: items.q,
-      page: items.p,
+      q: query,
+      page: pageNumber,
       key: '38043357-f10dc93754f8f78d0f9509fe0',
       image_type: 'photo',
       orientation: 'horizontal',

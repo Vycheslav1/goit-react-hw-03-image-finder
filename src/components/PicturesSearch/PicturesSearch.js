@@ -30,7 +30,7 @@ class PicturesSearch extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.q !== prevState.q || this.state.page !== prevState.page) {
-      getPicturesGallery(this.state)
+      getPicturesGallery(this.state.q, this.items.page)
         .then(response => {
           this.items.pictures = [...this.items.pictures, ...response.data.hits];
 
@@ -80,7 +80,7 @@ class PicturesSearch extends Component {
 
   handleChangePage = evt => {
     this.setState(prev => ({
-      page: (prev.page += 1),
+      page: (this.items.page += 1),
       isLoading: true,
       showButton: false,
     }));
