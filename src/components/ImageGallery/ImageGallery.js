@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 
-//import { Button } from 'components/Button/Button.js';
-
 import { PicturesList } from './ImageGalleryStyles.js';
 
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem.js';

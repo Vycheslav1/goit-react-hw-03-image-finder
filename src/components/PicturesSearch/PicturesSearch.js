@@ -16,37 +16,40 @@ import { Loader } from 'components/Loader/Loader.js';
 
 import { getPicturesGallery } from 'api/search.js';
 
+let isLoading;
+
+let largeImageURL;
+
+let tags;
+
 class PicturesSearch extends Component {
   state = {
     pictures: [],
     q: '',
     page: 1,
     show: false,
-    isLoading: false,
     showButton: false,
-    maxLength: 0,
   };
-  items = this.state;
+  isLoading = false;
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.q !== prevState.q || this.state.page !== prevState.page) {
-      getPicturesGallery(this.state.q, this.items.page)
+      getPicturesGallery(this.state.q, this.state.page)
         .then(response => {
-          this.items.pictures = [...this.items.pictures, ...response.data.hits];
-
           if (response.data.totalHits === 0) {
             Notiflix.Notify.info(
               'Sorry, there are no images matching your search query. Please try again.'
             );
           }
-          this.items.maxLength = response.data.totalHits;
-          this.items.showButton = true;
+          let pictureLength = response.data.totalHits;
+          let pageNumber = this.state.page;
+
           this.setState({
-            pictures: this.items.pictures,
-            isLoading: false,
-            showButton: this.items.page < Math.ceil(this.items.maxLength / 12),
-            maxLength: this.items.maxLength,
+            pictures: [...prevState.pictures, ...response.data.hits],
+            maxLength: response.data.totalHits,
+            showButton: pageNumber < Math.ceil(pictureLength / 12),
           });
+          isLoading = false;
         })
         .catch(error => {
           console.log(error);
@@ -56,24 +59,21 @@ class PicturesSearch extends Component {
 
   handleSubmit = evt => {
     evt.preventDefault();
-    this.setState({
-      pictures: [],
+    this.setState(prev => ({
+      pictures: prev.pictures.splice(0, prev.pictures.length),
       q: evt.target[1].value.trim(),
-      isLoading: true,
+      page: 1,
       showButton: false,
-    });
-
-    this.items.pictures = [];
-    this.items.page = 1;
+    }));
+    isLoading = true;
   };
 
   handleChangePage = () => {
     this.setState(prev => ({
       page: prev.page + 1,
-      isLoading: true,
       showButton: false,
     }));
-    this.items.page += 1;
+    isLoading = true;
   };
 
   handleModalView = e => {
@@ -91,15 +91,14 @@ class PicturesSearch extends Component {
 
     document.addEventListener('keydown', this.handleModalView);
 
-    this.items.largeImageURL = this.state.pictures.find(
+    largeImageURL = this.state.pictures.find(
       picture => picture.webformatURL === e.target.src
     ).largeImageURL;
 
-    this.items.tags = this.state.pictures.find(
+    tags = this.state.pictures.find(
       picture => picture.webformatURL === e.target.src
     ).tags;
   };
-
   showOverlay = () => {
     this.setState({
       show: false,
@@ -111,10 +110,10 @@ class PicturesSearch extends Component {
     return (
       <Div>
         <Searchbar valueSubmit={this.handleSubmit} />
-        {!this.state.isLoading ? (
+        {!isLoading ? (
           <ImageGallery
             viewModal={this.showModal}
-            photos={this.items.pictures}
+            photos={this.state.pictures}
           />
         ) : (
           <Loader />
@@ -123,8 +122,8 @@ class PicturesSearch extends Component {
         {this.state.show && (
           <Modal
             hideModal={this.showOverlay}
-            largeImageURL={this.items.largeImageURL}
-            title={this.items.tags}
+            largeImageURL={largeImageURL}
+            title={tags}
           />
         )}
       </Div>
